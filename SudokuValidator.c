@@ -101,7 +101,7 @@ int main(int argc, char *argv[]) {
 
     #pragma omp parallel
     {
-        #pragma omp parallel for
+        #pragma omp parallel for schedule(dynamic)
         for(int i = 0; i < SIZE; i++) {
             if(!check_column(i)) {
                 printf("Columna %d inválida\n", i);

@@ -1,14 +1,4 @@
-ps -lLf | grep SudokuValidator
-
-
-gcc SudokuValidator.c -o SudokuValidator -pthread
-
-./SudokuValidator sudoku-1 & ps -lLf | grep SudokuValidator
-
-
-
-
-gcc SudokuValidator.c -o SudokuValidator -fopenmp
+gcc SudokuValidator.c -o SudokuValidator -fopenmp -Wall
 
 
 
@@ -16,8 +6,8 @@ export OMP_NESTED=TRUE
 
 
 
+./SudokuValidator sudoku-1 & 
 
 
-export OMP_NESTED=TRUE
-./SudokuValidator sudoku-1 &
+
 ps -lLf | grep SudokuValidator
