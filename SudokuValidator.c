@@ -4,7 +4,7 @@
 #include <sys/mman.h>
 #include <sys/stat.h>
 #include <unistd.h>
-#include <pthread.h>
+#include <omp.h>
 
 #define SIZE 9
 
@@ -45,19 +45,6 @@ int check_column(int col) {
     }
 
     return 1;
-}
-
-void *thread_column(void *arg) {
-
-    int col = *(int *)arg;
-
-    if(!check_column(col)) {
-        printf("Columna %d inválida\n", col);
-    }
-
-    sleep(30);
-
-    pthread_exit(NULL);
 }
 
 int main(int argc, char *argv[]) {
@@ -106,42 +93,18 @@ int main(int argc, char *argv[]) {
 
     printf("Subcuadrantes válidos.\n");
 
-    pid_t pid = fork();
-    #pragma omp parallel for
-for(int i = 0; i < SIZE; i++) {
-    if(!check_column(i)) {
-        printf("Columna %d inválida\n", i);
+    // ---- OPENMP CON schedule(dynamic) ----
+
+    #pragma omp parallel for schedule(dynamic)
+    for(int i = 0; i < SIZE; i++) {
+        if(!check_column(i)) {
+            printf("Columna %d inválida\n", i);
+        }
     }
-}
 
-printf("Columnas revisadas con OpenMP.\n");
-
-sleep(30);
-/*
-pthread_t threads[SIZE];
-int cols[SIZE];
-
-for(int i = 0; i < SIZE; i++) {
-    cols[i] = i;
-    pthread_create(&threads[i], NULL, thread_column, &cols[i]);
-}
-
-for(int i = 0; i < SIZE; i++) {
-    pthread_join(threads[i], NULL);
-}
-
-printf("Columnas revisadas con pthread.\n");
-*/
+    printf("Columnas revisadas con OpenMP (dynamic).\n");
 
     sleep(30);  // Para observar LWP
-
-    if(pid == 0) {
-        printf("Proceso hijo ejecutándose. PID: %d\n", getpid());
-        sleep(30);
-    } else {
-        printf("Proceso padre. PID hijo: %d\n", pid);
-        sleep(30);
-    }
 
     return 0;
 }
