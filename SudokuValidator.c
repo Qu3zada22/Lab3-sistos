@@ -55,6 +55,8 @@ void *thread_column(void *arg) {
         printf("Columna %d inválida\n", col);
     }
 
+    sleep(30);
+
     pthread_exit(NULL);
 }
 
