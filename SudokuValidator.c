@@ -94,13 +94,14 @@ int main(int argc, char *argv[]) {
     printf("Subcuadrantes válidos.\n");
 
     // ---- OPENMP CON schedule(dynamic) ----
+omp_set_num_threads(1);
 
-    #pragma omp parallel for schedule(dynamic)
-    for(int i = 0; i < SIZE; i++) {
-        if(!check_column(i)) {
-            printf("Columna %d inválida\n", i);
-        }
+#pragma omp parallel for schedule(dynamic)
+for(int i = 0; i < SIZE; i++) {
+    if(!check_column(i)) {
+        printf("Columna %d inválida\n", i);
     }
+}
 
     printf("Columnas revisadas con OpenMP (dynamic).\n");
 
