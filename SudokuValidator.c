@@ -101,17 +101,21 @@ int main(int argc, char *argv[]) {
 
     #pragma omp parallel
     {
-        #pragma omp parallel for schedule(dynamic)
+        int outer_id = omp_get_thread_num();
+        printf("Outer thread %d\n", outer_id);
+
+        #pragma omp parallel for
         for(int i = 0; i < SIZE; i++) {
+            int inner_id = omp_get_thread_num();
+            printf("  Inner thread %d (outer %d)\n", inner_id, outer_id);
+
             if(!check_column(i)) {
                 printf("Columna %d inválida\n", i);
             }
         }
+
+        sleep(30);
     }
-
-    printf("Columnas revisadas con OpenMP nested.\n");
-
-    sleep(30);  // Para observar LWP
 
     return 0;
 }
