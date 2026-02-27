@@ -13,3 +13,11 @@ gcc SudokuValidator.c -o SudokuValidator -fopenmp
 
 
 export OMP_NESTED=TRUE
+
+
+
+
+
+export OMP_NESTED=TRUE
+./SudokuValidator sudoku-1 &
+ps -lLf | grep SudokuValidator
