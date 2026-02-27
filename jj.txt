@@ -4,3 +4,9 @@ ps -lLf | grep SudokuValidator
 gcc SudokuValidator.c -o SudokuValidator -pthread
 
 ./SudokuValidator sudoku-1 & ps -lLf | grep SudokuValidator
+
+
+
+
+gcc SudokuValidator.c -o SudokuValidator -fopenmp
+

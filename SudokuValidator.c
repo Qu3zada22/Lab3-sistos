@@ -107,19 +107,31 @@ int main(int argc, char *argv[]) {
     printf("Subcuadrantes válidos.\n");
 
     pid_t pid = fork();
-    pthread_t threads[SIZE];
-    int cols[SIZE];
-
-    for(int i = 0; i < SIZE; i++) {
-        cols[i] = i;
-        pthread_create(&threads[i], NULL, thread_column, &cols[i]);
+    #pragma omp parallel for
+for(int i = 0; i < SIZE; i++) {
+    if(!check_column(i)) {
+        printf("Columna %d inválida\n", i);
     }
+}
 
-    for(int i = 0; i < SIZE; i++) {
-        pthread_join(threads[i], NULL);
-    }
+printf("Columnas revisadas con OpenMP.\n");
 
-    printf("Columnas revisadas con pthread.\n");
+sleep(30);
+/*
+pthread_t threads[SIZE];
+int cols[SIZE];
+
+for(int i = 0; i < SIZE; i++) {
+    cols[i] = i;
+    pthread_create(&threads[i], NULL, thread_column, &cols[i]);
+}
+
+for(int i = 0; i < SIZE; i++) {
+    pthread_join(threads[i], NULL);
+}
+
+printf("Columnas revisadas con pthread.\n");
+*/
 
     sleep(30);  // Para observar LWP
 
