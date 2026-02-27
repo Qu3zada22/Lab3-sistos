@@ -1,50 +1,43 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <pthread.h>
-#include <omp.h>
+#include <fcntl.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
 #define SIZE 9
 
-int sudoku[SIZE][SIZE] = {
-    {5,3,4,6,7,8,9,1,2},
-    {6,7,2,1,9,5,3,4,8},
-    {1,9,8,3,4,2,5,6,7},
-    {8,5,9,7,6,1,4,2,3},
-    {4,2,6,8,5,3,7,9,1},
-    {7,1,3,9,2,4,8,5,6},
-    {9,6,1,5,3,7,2,8,4},
-    {2,8,7,4,1,9,6,3,5},
-    {3,4,5,2,8,6,1,7,9}
-};
+int grid[SIZE][SIZE];
 
-int check_row(int row) {
-    int seen[10] = {0};
-    for(int i = 0; i < SIZE; i++) {
-        int num = sudoku[row][i];
-        if(seen[num]) return 0;
-        seen[num] = 1;
+int main(int argc, char *argv[]) {
+
+    if(argc != 2) {
+        printf("Uso: %s archivo_sudoku\n", argv[0]);
+        return 1;
     }
-    return 1;
-}
 
-int check_column(int col) {
-    int seen[10] = {0};
-    for(int i = 0; i < SIZE; i++) {
-        int num = sudoku[i][col];
-        if(seen[num]) return 0;
-        seen[num] = 1;
+    int fd = open(argv[1], O_RDONLY);
+    if(fd < 0) {
+        perror("Error al abrir archivo");
+        return 1;
     }
-    return 1;
-}
 
-int main() {
+    struct stat st;
+    fstat(fd, &st);
+
+    char *map = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, fd, 0);
+
+    int index = 0;
     for(int i = 0; i < SIZE; i++) {
-        if(!check_row(i) || !check_column(i)) {
-            printf("Sudoku inválido\n");
-            return 0;
+        for(int j = 0; j < SIZE; j++) {
+            grid[i][j] = map[index++] - '0';
         }
     }
 
-    printf("Sudoku válido\n");
+    munmap(map, st.st_size);
+    close(fd);
+
+    printf("Archivo cargado correctamente.\n");
+
     return 0;
 }
