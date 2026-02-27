@@ -79,10 +79,10 @@ int main(int argc, char *argv[]) {
 
     if(pid == 0) {
         printf("Proceso hijo ejecutándose. PID: %d\n", getpid());
-        sleep(10);
+        sleep(30);
     } else {
         printf("Proceso padre. PID hijo: %d\n", pid);
-        sleep(10);
+        sleep(30);
     }
 
     return 0;
