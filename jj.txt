@@ -10,3 +10,6 @@ gcc SudokuValidator.c -o SudokuValidator -pthread
 
 gcc SudokuValidator.c -o SudokuValidator -fopenmp
 
+
+
+export OMP_NESTED=TRUE

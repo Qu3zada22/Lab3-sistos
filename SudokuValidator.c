@@ -47,6 +47,11 @@ int check_column(int col) {
     return 1;
 }
 
+
+omp_set_nested(1);
+omp_set_max_active_levels(2);
+omp_set_num_threads(2);
+
 int main(int argc, char *argv[]) {
 
     if(argc != 2) {
@@ -93,19 +98,24 @@ int main(int argc, char *argv[]) {
 
     printf("Subcuadrantes válidos.\n");
 
-    // ---- OPENMP CON schedule(dynamic) ----
-omp_set_num_threads(1);
+    // -------- OpenMP Nested --------
 
-#pragma omp parallel for schedule(dynamic)
-for(int i = 0; i < SIZE; i++) {
-    if(!check_column(i)) {
-        printf("Columna %d inválida\n", i);
+    omp_set_nested(1);        // activar nested
+    omp_set_num_threads(2);   // 2 threads externos
+
+    #pragma omp parallel
+    {
+        #pragma omp parallel for
+        for(int i = 0; i < SIZE; i++) {
+            if(!check_column(i)) {
+                printf("Columna %d inválida\n", i);
+            }
+        }
     }
-}
 
-    printf("Columnas revisadas con OpenMP (dynamic).\n");
+    printf("Columnas revisadas con OpenMP nested.\n");
 
-    sleep(30);  // Para observar LWP
+    sleep(30);  // para observar LWP
 
     return 0;
 }
